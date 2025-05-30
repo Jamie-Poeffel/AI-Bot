@@ -25,7 +25,6 @@ var (
 )
 
 func init() {
-
 	date := time.Now().Format("20060102")
 	logFilePath := fmt.Sprintf("logs/%s.log", date)
 	os.MkdirAll("logs", os.ModePerm)
@@ -41,12 +40,10 @@ func init() {
 	ErrorLog = log.New(&prefixWriter{logger: baseLogger, prefix: "[ERROR]"}, "", 0)
 }
 
-func RequestHandler(w http.ResponseWriter, r *http.Request) {
-	InfoLog.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL.Path)
-	fmt.Fprintln(w, "Hallo Welt!")
+func RequestHandler(next http.HandlerFunc) http.HandlerFunc  {
+	return func(w http.ResponseWriter, r *http.Request) {
+		InfoLog.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL.Path)
+		next(w, r)
+	}
 }
 
-func ErrorHandler(w http.ResponseWriter, r *http.Request) {
-	ErrorLog.Printf("%s %s %s", r.RemoteAddr, r.Method, r.URL.Path)
-	http.Error(w, "Fehler aufgetreten!", http.StatusInternalServerError)
-}
