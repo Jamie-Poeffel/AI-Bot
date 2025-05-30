@@ -4,29 +4,32 @@ import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 /* ---------- Login-State ---------- */
-const email    = ref('')
+const email = ref('')
 const password = ref('')
 const errorMsg = ref('')
-const loading  = ref(false)
-const router   = useRouter()
+const loading = ref(false)
+const router = useRouter()
 
-async function handleLogin () {
+async function handleLogin() {
   loading.value = true
   try {
-    const resp = await fetch('http://localhost:3000/login', {
-      method : 'POST',
+    const resp = await fetch('http://localhost:8080/login', {
+      method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body   : JSON.stringify({ email: email.value, password: password.value })
-    })
+      body: JSON.stringify({
+        Email: email.value,
+        Password: password.value,
+      }),
+      credentials: 'include',
+    });
+
 
     if (!resp.ok) {
       const { message } = await resp.json().catch(() => ({}))
       throw new Error(message || 'Ungültige Anmeldedaten')
     }
 
-    const { token } = await resp.json()
-    localStorage.setItem('token', token)
-    router.push('/')                // Ziel anpassen
+    router.push('/home');
   } catch (e: any) {
     errorMsg.value = e.message
   } finally {
@@ -68,12 +71,12 @@ watch(theme, (t) => applyTheme(t))
 
       <form @submit.prevent="handleLogin">
         <label for="email">E-Mail</label>
-        <input id="email" v-model="email" type="email"
-               placeholder="name@example.com" autocomplete="username" required />
+        <input id="email" v-model="email" type="email" placeholder="name@example.com" autocomplete="username"
+          required />
 
         <label for="password">Passwort</label>
-        <input id="password" v-model="password" type="password"
-               placeholder="••••••••" autocomplete="current-password" required />
+        <input id="password" v-model="password" type="password" placeholder="••••••••" autocomplete="current-password"
+          required />
 
         <button :disabled="loading">
           {{ loading ? 'Anmelden …' : 'Anmelden' }}
@@ -88,25 +91,25 @@ watch(theme, (t) => applyTheme(t))
 <!-- ---------- GLOBAL: Farb-Variablen & Dark-Override ---------- -->
 <style>
 :root {
-  --bg            : #f0f4ff;
-  --card-bg       : rgba(255,255,255,0.95);
-  --input-bg      : #ffffff;
-  --input-border  : #d1d5db;
-  --border-focus  : #4f46e5;
-  --text          : #0f172a;
-  --muted         : #64748b;
-  --primary       : #4f46e5;
-  --primary-hov   : #4338ca;
-  --error         : #ef4444;
+  --bg: #f0f4ff;
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --border-focus: #4f46e5;
+  --text: #0f172a;
+  --muted: #64748b;
+  --primary: #4f46e5;
+  --primary-hov: #4338ca;
+  --error: #ef4444;
 }
 
 html[data-theme="dark"] {
-  --bg            : #0f172a;
-  --card-bg       : rgba(30,41,59,0.82);
-  --input-bg      : rgba(51,65,85,0.60);
-  --input-border  : #64748b;
-  --text          : #e2e8f0;
-  --muted         : #94a3b8;
+  --bg: #0f172a;
+  --card-bg: rgba(30, 41, 59, 0.82);
+  --input-bg: rgba(51, 65, 85, 0.60);
+  --input-border: #64748b;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
 }
 </style>
 
@@ -133,7 +136,7 @@ html[data-theme="dark"] {
   align-items: center;
   justify-content: center;
   background: var(--bg);
-  font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   color: var(--text);
   padding: 2rem;
 }
@@ -145,7 +148,7 @@ html[data-theme="dark"] {
   border-radius: 1.5rem;
   background: var(--card-bg);
   backdrop-filter: blur(8px);
-  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
 }
 
 .login-card h1 {
@@ -178,7 +181,9 @@ html[data-theme="dark"] {
   transition: border-color .15s, box-shadow .15s;
 }
 
-.login-card input::placeholder { color: var(--muted); }
+.login-card input::placeholder {
+  color: var(--muted);
+}
 
 .login-card input:focus {
   outline: none;
@@ -198,8 +203,14 @@ html[data-theme="dark"] {
   transition: background .15s, opacity .15s;
 }
 
-.login-card button:hover    { background: var(--primary-hov); }
-.login-card button:disabled { opacity: .5; cursor: not-allowed; }
+.login-card button:hover {
+  background: var(--primary-hov);
+}
+
+.login-card button:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
 
 .error {
   text-align: center;
@@ -207,12 +218,13 @@ html[data-theme="dark"] {
   color: var(--error);
 }
 
-html, body {
-  height : 100%;
-  width  : 100%;
-  margin : 0;          /* weiße Standardränder eliminieren */
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  /* weiße Standardränder eliminieren */
   background: var(--bg);
   /* damit die Hintergrundfarbe immer das ganze Fenster ausfüllt */
 }
-
 </style>
