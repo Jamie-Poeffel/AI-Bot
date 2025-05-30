@@ -74,7 +74,7 @@ watch(theme, (t) => applyTheme(t))
 
         <label for="password">Passwort</label>
         <input id="password" v-model="password" type="password"
-               placeholder="••••••••" autocomplete="current-password" required />
+               placeholder="Passwort" autocomplete="current-password" required />
 
         <button :disabled="loading">
           {{ loading ? 'Anmelden …' : 'Anmelden' }}
