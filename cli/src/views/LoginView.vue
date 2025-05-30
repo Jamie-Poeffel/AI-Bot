@@ -86,32 +86,11 @@ watch(theme, (t) => applyTheme(t))
       </form>
     </div>
   </div>
+  </body>
 </template>
 
 <!-- ---------- GLOBAL: Farb-Variablen & Dark-Override ---------- -->
-<style>
-:root {
-  --bg: #f0f4ff;
-  --card-bg: rgba(255, 255, 255, 0.95);
-  --input-bg: #ffffff;
-  --input-border: #d1d5db;
-  --border-focus: #4f46e5;
-  --text: #0f172a;
-  --muted: #64748b;
-  --primary: #4f46e5;
-  --primary-hov: #4338ca;
-  --error: #ef4444;
-}
-
-html[data-theme="dark"] {
-  --bg: #0f172a;
-  --card-bg: rgba(30, 41, 59, 0.82);
-  --input-bg: rgba(51, 65, 85, 0.60);
-  --input-border: #64748b;
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-}
-</style>
+<style></style>
 
 <!-- ---------- COMPONENT-STYLES (scoped) ---------- -->
 <style scoped>
@@ -143,7 +122,7 @@ html[data-theme="dark"] {
 
 .login-card {
   width: 100%;
-  max-width: 24rem;
+  max-width: 400px;
   padding: 2rem;
   border-radius: 1.5rem;
   background: var(--card-bg);
@@ -226,5 +205,9 @@ body {
   /* weiße Standardränder eliminieren */
   background: var(--bg);
   /* damit die Hintergrundfarbe immer das ganze Fenster ausfüllt */
+}
+
+body {
+  color: var(--hintergrund);
 }
 </style>
