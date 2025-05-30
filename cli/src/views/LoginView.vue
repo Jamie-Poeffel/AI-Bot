@@ -17,7 +17,7 @@ async function handleLogin() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        Email: email.value,
+        Email: email.value.toLowerCase(),
         Password: password.value,
       }),
       credentials: 'include',
