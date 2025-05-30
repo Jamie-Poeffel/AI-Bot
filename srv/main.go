@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"srv/aibot/logger"
+	"srv/aibot/controllers"
 )
 
 func main() {
-	http.HandleFunc("/", logger.RequestHandler)
-	http.HandleFunc("/error", logger.ErrorHandler)
+	http.HandleFunc("/newUser", logger.RequestHandler(controllers.User))
 
 	fmt.Println("Server läuft auf http://localhost:8080")
 	if err := http.ListenAndServe(":8080", nil); err != nil {
