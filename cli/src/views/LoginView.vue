@@ -86,7 +86,6 @@ watch(theme, (t) => applyTheme(t))
       </form>
     </div>
   </div>
-  </body>
 </template>
 
 <!-- ---------- GLOBAL: Farb-Variablen & Dark-Override ---------- -->
