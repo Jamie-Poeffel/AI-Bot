@@ -75,6 +75,7 @@ watch(theme, (t) => applyTheme(t))
           required />
 
         <label for="password">Passwort</label>
+
         <input id="password" v-model="password" type="password" placeholder="••••••••" autocomplete="current-password"
           required />
 

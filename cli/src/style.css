@@ -19,7 +19,7 @@
   --error         : #ef4444;
 }
 
-html[data-theme="dark"] {
+html[data-theme="dark"] { 
   --hintergrund  : #0f172a;
   --bg            : #0f172a;
   --card-bg       : rgba(30,41,59,0.82);
