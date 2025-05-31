@@ -123,10 +123,6 @@ function formattedText() {
   white-space: normal;
 }
 
-.formatted-output li {
-  margin-left: 1rem;
-}
-
 .unstyled-textarea {
   all: unset;
   /* Alle Styles entfernen */
