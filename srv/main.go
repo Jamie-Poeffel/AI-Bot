@@ -10,9 +10,13 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/rs/cors"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		logger.Fatalf("Fehler beim Laden der .env-Datei: %v", err)
+	}
 	
 	db.Connect()
 
@@ -22,6 +26,7 @@ func main() {
 	
 	router.HandleFunc("/newUser", logger.RequestHandler(controllers.Register)).Methods("POST")
 	router.HandleFunc("/login", logger.RequestHandler(controllers.Login)).Methods("POST")
+	router.HandleFunc("/prompt", logger.RequestHandler(controllers.Auth(controllers.AI))).Methods("POST")
 
 	
 	corsMiddleware := cors.New(cors.Options{

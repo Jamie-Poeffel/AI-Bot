@@ -1,32 +1,79 @@
-<script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
+<script setup>
+import { ref, watch, onMounted, nextTick } from 'vue'
 
 const userInput = ref('')
 const botResponse = ref('')
+const textArea = ref(null)
 
 // Theme-Logik wie in LoginView
-const theme = ref<'light' | 'dark'>('light')
+const theme = ref('light')
 
-function applyTheme(t: 'light' | 'dark') {
+function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t)
   localStorage.setItem('theme', t)
 }
 
 onMounted(() => {
-  const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
+  const saved = localStorage.getItem('theme')
   if (saved) theme.value = saved
   else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme.value = 'dark'
   applyTheme(theme.value)
 })
 
+
+function autoResize() {
+  if (textArea.value) {
+    console.log('autoResize aufgerufen')
+    textArea.value.style.height = 'auto'
+    textArea.value.style.height = textArea.value.scrollHeight + 'px'
+    console.log('neue Höhe:', textArea.value.style.height)
+  }
+}
+
 watch(theme, (t) => applyTheme(t))
 
-function sendMessage() {
+async function sendMessage() {
   if (!userInput.value.trim()) return
-  // Hier könnte ein API-Call stehen, wir simulieren eine Antwort:
-  botResponse.value = `Antwort auf: "${userInput.value}"`
-  userInput.value = ''
+  botResponse.value = ""
+
+  const prompt = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/prompt`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ Text: userInput.value.trim() }),
+    credentials: 'include'
+  });
+
+  const data = await prompt.json()
+  botResponse.value = data?.candidates[0]?.content?.parts[0]?.text
+  await nextTick()
+  autoResize()
 }
+
+function formattedText() {
+  let text = botResponse.value;
+
+  text = text.replace(/\r/g, '');
+
+  text = text.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
+
+  text = text.replace(/^\* (.+)$/gm, '<li>$1</li>');
+
+  if (text.includes('<li>')) {
+    text = '<ul>' + text + '</ul>';
+  }
+
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  text = text.replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, '$1<em>$2</em>$3');
+
+  text = text.replace(/\n/g, '<br>');
+
+  return text;
+}
+
+
 </script>
 
 <template>
@@ -41,18 +88,12 @@ function sendMessage() {
     <div class="home-card">
       <h1>AI Bot</h1>
       <div class="chat-area">
-        <div v-if="botResponse" class="bot-message">
-          <strong>Bot:</strong> {{ botResponse }}
-        </div>
+        <div v-html="formattedText()" class="formatted-output"></div>
       </div>
       <form class="input-area" @submit.prevent="sendMessage">
         <div class="input-wrapper">
-          <textarea
-            v-model="userInput"
-            class="input-box"
-            placeholder="Stellen Sie eine Frage oder geben Sie einen Befehl ein..."
-            rows="3"
-          ></textarea>
+          <textarea v-model="userInput" class="input-box"
+            placeholder="Stellen Sie eine Frage oder geben Sie einen Befehl ein..." rows="3"></textarea>
           <button type="submit" class="send-btn">Senden</button>
         </div>
       </form>
@@ -77,6 +118,31 @@ function sendMessage() {
   font-size: .875rem;
 }
 
+.formatted-output {
+  padding: 2rem;
+  white-space: normal;
+}
+
+.formatted-output li {
+  margin-left: 1rem;
+}
+
+.unstyled-textarea {
+  all: unset;
+  /* Alle Styles entfernen */
+  width: 100%;
+  /* Breite füllt Container */
+  overflow: hidden;
+  /* Keine Scrollbars */
+  resize: none;
+  /* Kein manuelles Vergrößern */
+  white-space: pre-wrap;
+  /* Zeilenumbruch erhalten */
+  font-family: inherit;
+  /* Schrift wie umgebendes Element */
+  font-size: inherit;
+}
+
 .home-page {
   min-height: 100vh;
   display: flex;
@@ -93,8 +159,8 @@ function sendMessage() {
   max-width: 80%;
   padding: 2rem;
   border-radius: 1.5rem;
-  background: var(--card-bg, rgba(30,41,59,0.95));
-  box-shadow: 0 20px 40px rgba(0,0,0,.2);
+  background: var(--card-bg, rgba(30, 41, 59, 0.95));
+  box-shadow: 0 20px 40px rgba(0, 0, 0, .2);
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -115,7 +181,7 @@ function sendMessage() {
   margin-bottom: 1rem;
   color: var(--text, #e2e8f0);
   font-size: 1rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .08);
 }
 
 .bot-message {

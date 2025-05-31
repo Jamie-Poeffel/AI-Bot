@@ -86,8 +86,17 @@ func Login(w http.ResponseWriter, r *http.Request) {
     }
 
     sessionToken := generateSessionToken()
+    user.UUID = sessionToken
 
-	user.UUID = sessionToken
+    _, err = db.UserCollection.UpdateOne(
+        ctx,
+        bson.M{"email": user.Email},
+        bson.M{"$set": bson.M{"uuid": sessionToken}},
+    )
+    if err != nil {
+        http.Error(w, "Failed to update session token", http.StatusInternalServerError)
+        return
+    }
 
     http.SetCookie(w, &http.Cookie{
         Name:     "session_token",
@@ -107,7 +116,7 @@ func generateSessionToken() string {
 }
 
 
-func auth(next http.HandlerFunc) http.HandlerFunc {
+func Auth(next http.HandlerFunc) http.HandlerFunc {
     return func(w http.ResponseWriter, r *http.Request) {
         cookie, err := r.Cookie("session_token")
         if err != nil {
@@ -125,7 +134,7 @@ func auth(next http.HandlerFunc) http.HandlerFunc {
         defer cancel()
 
         var user models.User
-        err = db.UserCollection.FindOne(ctx, bson.M{"uuid": &sessionUUID}).Decode(&user)
+        err = db.UserCollection.FindOne(ctx, bson.M{"uuid": sessionUUID}).Decode(&user)
         if err != nil {
             http.Error(w, "Unauthorized - Invalid session", http.StatusUnauthorized)
             return

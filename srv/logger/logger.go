@@ -47,3 +47,9 @@ func RequestHandler(next http.HandlerFunc) http.HandlerFunc  {
 	}
 }
 
+func Fatalf(format string, v ...interface{}) {
+	ErrorLog.Printf(format, v...)
+	os.Exit(1)
+}
+
+
