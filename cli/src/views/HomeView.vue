@@ -125,17 +125,11 @@ function formattedText() {
 
 .unstyled-textarea {
   all: unset;
-  /* Alle Styles entfernen */
   width: 100%;
-  /* Breite füllt Container */
   overflow: hidden;
-  /* Keine Scrollbars */
   resize: none;
-  /* Kein manuelles Vergrößern */
   white-space: pre-wrap;
-  /* Zeilenumbruch erhalten */
   font-family: inherit;
-  /* Schrift wie umgebendes Element */
   font-size: inherit;
 }
 

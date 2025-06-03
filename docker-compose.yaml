@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  proxy:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/custom.conf:ro
+    depends_on:
+      - cli
+      - srv
+    restart: unless-stopped
+
+  cli:
+    build: ./cli
+    expose:
+      - "80"
+    depends_on:
+      - srv
+    environment:
+      - VUE_APP_API_URL=http://api.localhost
+      - VITE_APP_BASE_URL=http://localhost
+    deploy:
+      replicas: 2
+    restart: unless-stopped
+
+  srv:
+    build: ./srv
+    expose:
+      - "4000"
+    depends_on:
+      - mongo
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+      - MONGO_URI=mongodb://mongo:27017/
+      - PRODUCTION=true
+    deploy:
+      replicas: 2
+    restart: unless-stopped
+
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+
+volumes:
+  mongo-data:

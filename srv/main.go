@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
+
 
 	"srv/aibot/logger"
 	"srv/aibot/controllers"
@@ -14,8 +16,10 @@ import (
 )
 
 func main() {
-	if err := godotenv.Load(); err != nil {
-		logger.Fatalf("Fehler beim Laden der .env-Datei: %v", err)
+	if os.Getenv("PRODUCTION") == "" {
+		if err := godotenv.Load(); err != nil {
+			logger.Fatalf("Fehler beim Laden der .env-Datei: %v", err)
+		}
 	}
 	
 	db.Connect()
