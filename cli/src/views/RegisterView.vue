@@ -13,7 +13,7 @@ const router = useRouter()
 async function handleRegister() {
   loading.value = true
   try {
-    const resp = await fetch('http://localhost:8080/register', {
+    const resp = await fetch('http://localhost:8080/newUser', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -83,7 +83,7 @@ watch(theme, (t) => applyTheme(t))
           {{ loading ? 'Registrieren …' : 'Registrieren' }}
         </button>
 
-        <router-link class="router-link" to="/login">Bereits ein Konto? Jetzt einloggen</router-link>
+        <router-link class="router-link" to="/">Bereits ein Konto? Jetzt einloggen</router-link>
 
         <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
       </form>

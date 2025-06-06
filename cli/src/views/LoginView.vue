@@ -83,6 +83,8 @@ watch(theme, (t) => applyTheme(t))
           {{ loading ? 'Anmelden …' : 'Anmelden' }}
         </button>
 
+        <router-link class="router-link" to="/register">Noch kein Konto? Jetzt registrieren</router-link>
+
         <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
       </form>
     </div>
@@ -94,6 +96,22 @@ watch(theme, (t) => applyTheme(t))
 
 <!-- ---------- COMPONENT-STYLES (scoped) ---------- -->
 <style scoped>
+.router-link {
+  display: block;
+  margin-top: .5rem;
+  text-align: center;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
+.router-link {
+  display: block;
+  margin-top: .5rem;
+  text-align: center;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 1.1rem;
+}
 .theme-selector {
   position: fixed;
   top: 1rem;
