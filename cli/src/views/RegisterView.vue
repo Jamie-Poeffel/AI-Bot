@@ -13,7 +13,7 @@ const router = useRouter()
 async function handleLogin() {
   loading.value = true
   try {
-    const resp = await fetch('http://localhost:8080/login', {
+    const resp = await fetch('http://localhost:8080/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -67,9 +67,9 @@ watch(theme, (t) => applyTheme(t))
   <!-- Login-Card -->
   <div class="login-page">
     <div class="login-card">
-      <h1>Login</h1>
+      <h1>Register</h1>
 
-      <form @submit.prevent="handleLogin">
+      <form @submit.prevent="handleRegister">
         <label for="email">E-Mail</label>
         <input id="email" v-model="email" type="email" placeholder="name@example.com" autocomplete="username"
           required />
@@ -80,10 +80,10 @@ watch(theme, (t) => applyTheme(t))
           required />
 
         <button :disabled="loading">
-          {{ loading ? 'Anmelden …' : 'Anmelden' }}
+          {{ loading ? 'Registrieren …' : 'Registrieren' }}
         </button>
 
-        <router-link class="router-link" to="/register">Noch kein Konto? Jetzt registrieren</router-link>
+        <router-link class="router-link" to="/login">Bereits ein Konto? Jetzt einloggen</router-link>
 
         <p v-if="errorMsg" class="error">{{ errorMsg }}</p>
       </form>

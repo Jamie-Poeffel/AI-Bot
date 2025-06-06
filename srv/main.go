@@ -11,7 +11,7 @@ import (
 
 func main() {
 	db.Connect()
-	http.HandleFunc("/newUser", logger.RequestHandler(controllers.Register))
+	http.HandleFunc("/register", logger.RequestHandler(controllers.Register))
 	http.HandleFunc("/login", logger.RequestHandler(controllers.Login))
 
 	fmt.Println("Server läuft auf http://localhost:8080")
