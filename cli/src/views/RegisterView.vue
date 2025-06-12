@@ -1,5 +1,5 @@
 <!-- LoginView.vue -->
-<script setup lang="ts">
+<script setup>
 import { ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
@@ -13,7 +13,7 @@ const router = useRouter()
 async function handleRegister() {
   loading.value = true
   try {
-    const resp = await fetch('http://localhost:8080/newUser', {
+    const resp = await fetch(`${import.meta.env.VITE_APP_BASE_URL}/newUser`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -30,7 +30,7 @@ async function handleRegister() {
     }
 
     router.push('/home');
-  } catch (e: any) {
+  } catch (e) {
     errorMsg.value = e.message
   } finally {
     loading.value = false
@@ -38,15 +38,15 @@ async function handleRegister() {
 }
 
 /* ---------- Theme-State ---------- */
-const theme = ref<'light' | 'dark'>('light')
+const theme = ref < 'light' | 'dark' > ('light')
 
-function applyTheme(t: 'light' | 'dark') {
+function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t)
   localStorage.setItem('theme', t)
 }
 
 onMounted(() => {
-  const saved = localStorage.getItem('theme') as 'light' | 'dark' | null
+  const saved = localStorage.getItem('theme')
   if (saved) theme.value = saved
   else if (window.matchMedia('(prefers-color-scheme: dark)').matches) theme.value = 'dark'
   applyTheme(theme.value)
@@ -96,7 +96,6 @@ watch(theme, (t) => applyTheme(t))
 
 <!-- ---------- COMPONENT-STYLES (scoped) ---------- -->
 <style scoped>
-
 .router-link {
   display: block;
   margin-top: .5rem;

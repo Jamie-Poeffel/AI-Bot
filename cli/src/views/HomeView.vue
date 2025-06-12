@@ -47,6 +47,7 @@ async function sendMessage() {
 
   const data = await prompt.json()
   botResponse.value = data?.candidates[0]?.content?.parts[0]?.text
+  userInput.value = ''
   await nextTick()
   autoResize()
 }
@@ -58,20 +59,35 @@ function formattedText() {
 
   text = text.replace(/\t/g, '&nbsp;&nbsp;&nbsp;&nbsp;');
 
-  text = text.replace(/^\* (.+)$/gm, '<li>$1</li>');
+  // Handle multiline code blocks (```...```)
+  text = text.replace(/```([\s\S]*?)```/g, function (match, code) {
+    return `<pre><code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+  });
 
+  // Handle inline code (`...`)
+  text = text.replace(/`([^`\n]+?)`/g, function (match, code) {
+    return `<code>${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`;
+  });
+
+  // Handle list items
+  text = text.replace(/^\* (.+)$/gm, '<li>$1</li>');
   if (text.includes('<li>')) {
     text = '<ul>' + text + '</ul>';
   }
 
+  // Bold (**text**)
   text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
 
+  // Italic (*text*)
   text = text.replace(/(^|[^*])\*([^*]+)\*([^*]|$)/g, '$1<em>$2</em>$3');
 
+  // Newlines
   text = text.replace(/\n/g, '<br>');
 
   return text;
 }
+
+
 
 
 </script>

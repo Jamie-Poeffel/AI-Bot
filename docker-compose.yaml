@@ -21,8 +21,6 @@ services:
     environment:
       - VUE_APP_API_URL=http://api.localhost
       - VITE_APP_BASE_URL=http://localhost
-    deploy:
-      replicas: 2
     restart: unless-stopped
 
   srv:
