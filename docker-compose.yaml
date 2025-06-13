@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   proxy:
     image: nginx:latest
@@ -29,16 +27,15 @@ services:
 
   srv:
     build: ./srv
-    expose:
-      - "4000"
+    ports:
+      - "4000:4000"
     depends_on:
       - mongo
     environment:
       - GOOGLE_API_KEY=${GOOGLE_API_KEY}
       - MONGO_URI=mongodb://root:secret@mongo:27017
       - PRODUCTION=true
-    deploy:
-      replicas: 2
+      - FRONTEND_URL="http://localhost/"
     networks:
       - app-network
     restart: unless-stopped

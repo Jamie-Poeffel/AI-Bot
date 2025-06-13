@@ -38,7 +38,7 @@ async function handleLogin() {
 }
 
 /* ---------- Theme-State ---------- */
-const theme = ref < 'light' | 'dark' > ('light')
+const theme = ref('light')
 
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t)
